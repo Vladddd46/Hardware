@@ -10,23 +10,25 @@
 #include <pthread.h>
 #include "esp_log.h"
 
-void *led2() {
-  int v;
-    for(v = 0; v < 255; v++) {
-      dac_output_voltage(DAC_CHANNEL_2, v);
-      ets_delay_us(5000);
-    }     
-    for(v = 255; v > 0; v--) {
-      dac_output_voltage(DAC_CHANNEL_2, v);
-      ets_delay_us(5000);
-  }
-    return NULL;
+void task_led_on_dac(void *param) {
+
+    while(1) {
+        int v;
+        for(v = 0; v < 255; v++) {
+          dac_output_voltage(DAC_CHANNEL_2, v);
+          ets_delay_us(5000);
+        }     
+        for(v = 255; v > 0; v--) {
+          dac_output_voltage(DAC_CHANNEL_2, v);
+          ets_delay_us(5000);
+        }
+        vTaskDelay(1);
+    }
+    vTaskDelete(NULL);
 }
 
-void app_main() {
-    int error = 0;
-    pthread_t thread_id; 
-    dac_output_enable(DAC_CHANNEL_2);
+void task_len_on_pwm(void *param) {
+    int error;
 
     // timer configuration.
     ledc_timer_config_t ledc_timer;
@@ -52,14 +54,21 @@ void app_main() {
     if (error != ESP_OK) ESP_LOGI("line 51 ", "%s", "some error occured");
 
     while(1) {
-        pthread_create(&thread_id, NULL, led2, NULL); // led on DAC
         // ascending.
         ledc_set_fade_with_time(ledc_channel.speed_mode, ledc_channel.channel, 255, 1000);
         ledc_fade_start(ledc_channel.speed_mode, ledc_channel.channel, LEDC_FADE_WAIT_DONE);
         // descending.
         ledc_set_fade_with_time(ledc_channel.speed_mode, ledc_channel.channel, 0, 1000);
         ledc_fade_start(ledc_channel.speed_mode, ledc_channel.channel, LEDC_FADE_WAIT_DONE);
-        pthread_join(thread_id, NULL); 
+        vTaskDelay(1);
     }
+    vTaskDelete(NULL);
 }
 
+
+void app_main() {
+    dac_output_enable(DAC_CHANNEL_2);
+
+    xTaskCreate(task_led_on_dac, "led_on_dac", 2048, NULL, 5, NULL);
+    xTaskCreate(task_len_on_pwm, "led_on_pwm", 2048, NULL, 5, NULL);
+}
