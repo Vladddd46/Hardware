@@ -127,7 +127,7 @@ void sw2_task(void *param) {
 void app_main() {
     if (gpio_set_direction(LCD_1, GPIO_MODE_OUTPUT) != ESP_OK) ESP_LOGI("line 116 ", "%s", "some error occured");
     if (gpio_set_direction(LCD_2, GPIO_MODE_OUTPUT) != ESP_OK) ESP_LOGI("line 117 ", "%s", "some error occured");
-    if (gpio_set_direction(LCD_3, GPIO_MODE_OUTPUT) != ESP_OK) ESP_LOGI("line 118 ", "%s", "some error occured");
+    // if (gpio_set_direction(LCD_3, GPIO_MODE_OUTPUT) != ESP_OK) ESP_LOGI("line 118 ", "%s", "some error occured"); // for test goals
     if (gpio_set_direction(SW1,   GPIO_MODE_INPUT) != ESP_OK) ESP_LOGI("line 119 ", "%s", "some error occured");
     if (gpio_set_direction(SW2,   GPIO_MODE_INPUT) != ESP_OK) ESP_LOGI("line 120 ", "%s", "some error occured");
 
