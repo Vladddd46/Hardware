@@ -11,7 +11,6 @@
 #include "esp_log.h"
 
 void task_led_on_dac(void *param) {
-
     while(1) {
         int v;
         for(v = 0; v < 255; v++) {
@@ -27,17 +26,15 @@ void task_led_on_dac(void *param) {
     vTaskDelete(NULL);
 }
 
-void task_len_on_pwm(void *param) {
-    int error;
-
+void task_led_on_pwm(void *param) {
     // timer configuration.
     ledc_timer_config_t ledc_timer;
     ledc_timer.speed_mode      = LEDC_HIGH_SPEED_MODE;
     ledc_timer.freq_hz         = 100;
     ledc_timer.duty_resolution = LEDC_TIMER_8_BIT; // 256
     ledc_timer.timer_num       = LEDC_TIMER_1;
-    error = ledc_timer_config(&ledc_timer);
-    if (error != ESP_OK) ESP_LOGI("line 37 ", "%s", "some error occured");
+    if(ledc_timer_config(&ledc_timer) != ESP_OK) 
+        ESP_LOGI("ledc_timer_config ", "%s", "some error occured");
 
     // chanel configuration.
     ledc_channel_config_t ledc_channel;
@@ -47,11 +44,10 @@ void task_len_on_pwm(void *param) {
     ledc_channel.intr_type  = LEDC_INTR_FADE_END;
     ledc_channel.timer_sel  = LEDC_TIMER_1;
     ledc_channel.duty     = 0;
-
-    error = ledc_channel_config(&ledc_channel);
-    if (error != ESP_OK) ESP_LOGI("line 49 ", "%s", "some error occured");
-    error = ledc_fade_func_install(0);
-    if (error != ESP_OK) ESP_LOGI("line 51 ", "%s", "some error occured");
+    if (ledc_channel_config(&ledc_channel) != ESP_OK) 
+        ESP_LOGI("ledc_channel_config ", "%s", "some error occured");
+    if (ledc_fade_func_install(0) != ESP_OK) 
+        ESP_LOGI("ledc_fade_func_install ", "%s", "some error occured");
 
     while(1) {
         // ascending.
@@ -70,5 +66,5 @@ void app_main() {
     dac_output_enable(DAC_CHANNEL_2);
 
     xTaskCreate(task_led_on_dac, "led_on_dac", 2048, NULL, 5, NULL);
-    xTaskCreate(task_len_on_pwm, "led_on_pwm", 2048, NULL, 5, NULL);
+    xTaskCreate(task_led_on_pwm, "led_on_pwm", 2048, NULL, 5, NULL);
 }
