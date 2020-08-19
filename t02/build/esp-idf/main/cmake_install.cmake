@@ -1,4 +1,4 @@
-# Install script for directory: /Users/vdepeshko/esp/hello_world/main
+# Install script for directory: /Users/vdepeshko/Desktop/ESP32_learning/t02/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

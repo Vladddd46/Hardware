@@ -1241,7 +1241,7 @@ rule CXX_STATIC_LIBRARY_LINKER____idf_main_
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /Users/vdepeshko/.brew/Cellar/cmake/3.18.1/bin/cmake --regenerate-during-build -S/Users/vdepeshko/esp/hello_world -B/Users/vdepeshko/esp/hello_world/build
+  command = /Users/vdepeshko/.brew/Cellar/cmake/3.18.1/bin/cmake --regenerate-during-build -S/Users/vdepeshko/Desktop/ESP32_learning/t02 -B/Users/vdepeshko/Desktop/ESP32_learning/t02/build
   description = Re-running CMake...
   generator = 1
 

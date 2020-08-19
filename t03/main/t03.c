@@ -16,6 +16,7 @@
 #include "esp_spi_flash.h"
 #include "driver/dac.h"
 #include "esp_log.h"
+#include "wrappers.h"
 
 #define SW1     39
 #define SW2     18
@@ -29,21 +30,6 @@ static bool flash_status_1 = false;
 static int  pressed_status_2 = 0;
 static bool flash_status_2 = false;
 
-void gpio_set_direction_wrapper(int gpio, int mode) {
-    if (gpio_set_direction(gpio, mode) != ESP_OK) {
-        ESP_LOGI("gpio_set_direction: ", "%s", "some error occured.");
-        exit(1);
-    }
-}
-
-
-
-void gpio_set_level_wrapper(int gpio, int level) {
-    if (gpio_set_level(gpio, level) != ESP_OK) {
-        ESP_LOGI("gpio_set_level ", "%s", "some error occured.");
-        exit(1);
-    }
-}
 
 
 void sw1_task(void *param) {
