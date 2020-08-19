@@ -37,7 +37,7 @@ void app_main() {
         int v;
         for(v = 0; v < 255; v+= 30) {
           if (dac_output_voltage(DAC_CHANNEL_1, v) != ESP_OK) 
-            ESP_LOGI("dac_output_voltage ", "%s", "some error occured.");
+              ESP_LOGI("dac_output_voltage ", "%s", "some error occured.");
           ets_delay_us(5000);
         }
     }

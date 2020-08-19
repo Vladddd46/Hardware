@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/vdepeshko/esp/hello_world/build/esp-idf/mbedtls/mbedtls/cmake_install.cmake")
+  include("/Users/vdepeshko/Desktop/ESP32_learning/t01/build/esp-idf/mbedtls/mbedtls/cmake_install.cmake")
 
 endif()
 
