@@ -56,4 +56,11 @@ void sh1106_set(sh1106_t *display, uint8_t x, uint8_t y, bool s);
 */
 bool sh1106_get(sh1106_t *display, uint8_t x, uint8_t y);
 
+
+
+void print_char(sh1106_t **display, char c, int page, int position);
+void print_str_in_line(sh1106_t **display, char *str, int page);
+void display_print(sh1106_t **display, char *str);
+void init_display(sh1106_t *display);
+
 #endif

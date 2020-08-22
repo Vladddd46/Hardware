@@ -2,6 +2,93 @@
 #include "sh1106.h"
 #include <unistd.h>
 #include <stdlib.h>
+#include "font6x8.h"
+
+/*
+ * Prints character on specified page and position.
+ * gage must be >= 0 && <= 7
+ * position must be >= 0 && <= 126
+ */
+void print_char(sh1106_t **display, char c, int page, int position) {
+    // args validation.
+    if (page < 0 || page > 7 || position < 0 || position > 126) 
+        return;
+
+    // index of line, which represent character 'c' in font6x8 array
+    int index_in_font = (c - 32) * 6;
+
+    sh1106_t *display1 = *display;
+    display1->pages[page][position + 0] = font6x8[index_in_font];
+    display1->pages[page][position + 1] = font6x8[index_in_font + 1];
+    display1->pages[page][position + 2] = font6x8[index_in_font + 2];
+    display1->pages[page][position + 3] = font6x8[index_in_font + 3];
+    display1->pages[page][position + 4] = font6x8[index_in_font + 4];
+    display1->pages[page][position + 5] = font6x8[index_in_font + 5];
+}
+
+
+
+/*
+ * Prints str. in a specified line(page).
+ * Line(page) must be >= 0 &&  <= 7 
+ * line over 22char will be cut.
+ */
+void print_str_in_line(sh1106_t **display, char *str, int page) {
+    if (page < 0 || page > 7)
+        return;
+
+    int pos = 0;
+    for (int i = 0; str[i]; ++i) {
+        print_char(display, str[i], 0, pos);
+        pos += 6;
+
+        if (pos >= 126)
+            break;
+    }
+}
+
+
+
+/*
+ * Prints string on display. Starts printing from top left corver(0,0)
+ * If string is larger, than 176 chars, it will. be cut.
+ */
+void display_print(sh1106_t **display, char *str) {
+    int line = 0;
+    int pos  = 0;
+
+    for (int i = 0; str[i]; ++i) {
+        print_char(display, str[i], line, pos);
+        
+        pos += 6;
+        if (pos >= 126) {
+            line += 1;
+            pos = 0;
+        }
+
+        if (line >= 7)
+            break;
+    }
+}
+
+
+
+/*
+ * Initialize display structure 
+ * and fills all pixels with 0 value.
+ */
+void init_display(sh1106_t *display) {
+    display->addr = SH1106_DEFAULT_ADDR;
+    display->port = SH1106_DEFAULT_PORT;
+    sh1106_init(display);
+    for (uint8_t y = 0; y < 64; y++) {
+        for (uint8_t x = 0; x < 132; x++) {
+            sh1106_set(display, x, y, 0);
+        }
+    }
+}
+
+
 
 void sh1106_init(sh1106_t *display) {
     i2c_cmd_handle_t cmd = i2c_cmd_link_create(); // инициализация сссылки на комманды
