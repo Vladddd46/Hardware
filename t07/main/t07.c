@@ -120,6 +120,6 @@ void app_main() {
     init_display(&display);
     
     sh1106_t *display1 = &display;
-    display_print(&display1, "Hello World!!!");
+    display_print(&display1, "Spasiba Yura!!!");
     sh1106_update(&display);
 }
