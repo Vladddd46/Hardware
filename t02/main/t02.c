@@ -10,6 +10,8 @@
 #include <pthread.h>
 #include "esp_log.h"
 
+
+
 void task_led_on_dac(void *param) {
     while(1) {
         int v;
@@ -25,6 +27,8 @@ void task_led_on_dac(void *param) {
     }
     vTaskDelete(NULL);
 }
+
+
 
 void task_led_on_pwm(void *param) {
     // timer configuration.
@@ -43,7 +47,8 @@ void task_led_on_pwm(void *param) {
     ledc_channel.channel    = LEDC_CHANNEL_1;
     ledc_channel.intr_type  = LEDC_INTR_FADE_END;
     ledc_channel.timer_sel  = LEDC_TIMER_1;
-    ledc_channel.duty     = 0;
+    ledc_channel.duty       = 0;
+
     if (ledc_channel_config(&ledc_channel) != ESP_OK) 
         ESP_LOGI("ledc_channel_config ", "%s", "some error occured");
     if (ledc_fade_func_install(0) != ESP_OK) 
@@ -60,6 +65,7 @@ void task_led_on_pwm(void *param) {
     }
     vTaskDelete(NULL);
 }
+
 
 
 void app_main() {
