@@ -10,15 +10,20 @@
 #include <pthread.h>
 #include "esp_log.h"
 
+#define LED1_GPIO 27
 
 
-void task_led_on_dac(void *param) {
+
+static void led_on_dac(void *param) {
+    dac_output_enable(DAC_CHANNEL_2);
+
     while(1) {
         int v;
         for(v = 0; v < 255; v++) {
           dac_output_voltage(DAC_CHANNEL_2, v);
           ets_delay_us(5000);
-        }     
+        } 
+
         for(v = 255; v > 0; v--) {
           dac_output_voltage(DAC_CHANNEL_2, v);
           ets_delay_us(5000);
@@ -30,7 +35,7 @@ void task_led_on_dac(void *param) {
 
 
 
-void task_led_on_pwm(void *param) {
+static void led_on_pwm(void *param) {
     // timer configuration.
     ledc_timer_config_t ledc_timer;
     ledc_timer.speed_mode      = LEDC_HIGH_SPEED_MODE;
@@ -42,7 +47,7 @@ void task_led_on_pwm(void *param) {
 
     // chanel configuration.
     ledc_channel_config_t ledc_channel;
-    ledc_channel.gpio_num   = 27;
+    ledc_channel.gpio_num   = LED1_GPIO;
     ledc_channel.speed_mode = LEDC_HIGH_SPEED_MODE;
     ledc_channel.channel    = LEDC_CHANNEL_1;
     ledc_channel.intr_type  = LEDC_INTR_FADE_END;
@@ -69,8 +74,6 @@ void task_led_on_pwm(void *param) {
 
 
 void app_main() {
-    dac_output_enable(DAC_CHANNEL_2);
-
-    xTaskCreate(task_led_on_dac, "led_on_dac", 2048, NULL, 5, NULL);
-    xTaskCreate(task_led_on_pwm, "led_on_pwm", 2048, NULL, 5, NULL);
+    xTaskCreate(led_on_dac, "led_on_dac", 2048, NULL, 5, NULL);
+    xTaskCreate(led_on_pwm, "led_on_pwm", 2048, NULL, 5, NULL);
 }

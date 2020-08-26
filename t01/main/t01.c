@@ -1,13 +1,6 @@
 /*
  * Switch on led1/2/3.
  */
-#include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "esp_system.h"
-#include "esp_spi_flash.h"
-#include <driver/gpio.h>
-#include "esp_log.h"
 #include "wrappers.h"
 
 #define GPIO_LED1 27
