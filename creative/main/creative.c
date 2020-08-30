@@ -31,75 +31,62 @@ static void IRAM_ATTR gpio_isr_handler(void* arg) {
 
 
 
-int screen_num = 0;
-int refresh    = 0;
+static int screen_num = 0;
 
-// Initialize I2C driver.
-void init_i2c_driver() {
-    i2c_config_t i2c_config = {
-        .mode             = I2C_MODE_MASTER,
-        .sda_io_num       = 21, //SDA_PIN,
-        .scl_io_num       = 22, //SCL_PIN,
-        .sda_pullup_en    = GPIO_PULLUP_ENABLE,
-        .scl_pullup_en    = GPIO_PULLUP_ENABLE,
-        .master.clk_speed = 1000000
-    };
-    i2c_param_config(SH1106_DEFAULT_PORT,   &i2c_config);
-    i2c_driver_install(SH1106_DEFAULT_PORT, I2C_MODE_MASTER, 0, 0, 0);
-}
-
-
-static void switch_screen(int direction) {
-    sh1106_t display;
-    init_display(&display);
-    sh1106_t *display1 = &display;
-
-    if (direction == left) {
-        if (screen_num > -1)
-            screen_num -= 1;
-        if (screen_num == 0) {
-            display_print(&display1, "screen 0!");
-            sh1106_update(&display);
-        }
-        if (screen_num == -1) {
-            display_print(&display1, "screen -1!");
-            sh1106_update(&display);
-        }
-    }
-
-    if (direction == right) {
-        if (screen_num < 1)
-        screen_num += 1;
-
-        if (screen_num == 0) {
-            display_print(&display1, "screen 0!");
-            sh1106_update(&display);
-        }
-        if (screen_num == 1) {
-            display_print(&display1, "screen 1!");
-            sh1106_update(&display);
-            // oled_print("screen 1");
-        }
-    }
-}
-
-
-static void gpio_task_example(void* arg) {
+static void switch_handler(void* arg) {
     uint32_t io_num;
 
     for(;;) {
         if(xQueueReceive(gpio_evt_queue, &io_num, portMAX_DELAY)) {
-            if (io_num == GPIO_BUTTON1)
-                switch_screen(right);
-            else if (io_num == GPIO_BUTTON2)
-                switch_screen(left);
+            if (io_num == GPIO_BUTTON1) {
+                if (screen_num == 0)
+                    screen_num += 1;
+            }
+            else if (io_num == GPIO_BUTTON2) {
+                if (screen_num == 1)
+                    screen_num -= 1;
+            }
         }
     }
 }
 
+static void checker(void *s) {
+    sh1106_t display;
+    sh1106_init(&display);
+    sh1106_clear(&display);
+
+    sh1106_t *display1 = &display;
+    // printf("%d\n", screen_num);
+    while(1) {
+
+
+        printf("%d\n", screen_num);
+        if (screen_num == 0) {
+            sh1106_clear(&display);
+            char *x = get_dht11_data(2, 4, 1);
+            char res[50];
+            bzero(res, 50);
+            sprintf(res, "   humidity: %s %%", x);
+            print_str_in_line(&display1, res, 3);
+        }
+        else if (screen_num == 1) {
+            sh1106_clear(&display);
+            char *x = get_dht11_data(2, 4, 0);
+            char res[50];
+            bzero(res, 50);
+            sprintf(res, "   temperature: %s C", x);
+            print_str_in_line(&display1, res, 3);
+        }
+        sh1106_update(&display);
+        vTaskDelay(1);
+    }
+}
+
 void app_main(void) {
+    // Oled enable
     gpio_set_direction_wrapper(32, GPIO_MODE_OUTPUT);
     gpio_set_level_wrapper(32, 1);
+
     init_i2c_driver();
 
     gpio_config_t io_conf;
@@ -115,7 +102,8 @@ void app_main(void) {
 
     gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
 
-    xTaskCreate(gpio_task_example, "gpio_task_example", 2048, NULL, 10, NULL);
+    xTaskCreate(switch_handler, "switch_handler", 4048, NULL, 10, NULL);
+    xTaskCreate(checker, "checker", 4048, NULL, 10, NULL);
 
     gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
     gpio_isr_handler_add(GPIO_BUTTON1, gpio_isr_handler, (void*) GPIO_BUTTON1);
