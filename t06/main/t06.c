@@ -1,29 +1,30 @@
-#include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/uart.h"
 #include "driver/gpio.h"
-#include <strings.h>
-#include <string.h>
 #include "driver/dac.h"
-#include "driver/ledc.h"
-#include "esp_log.h"
-#include "wrappers.h"
 
-#define GPIO_NUM_5   5
-#define GPIO_NUM_25  25
+#define AMP_POWER_PIN 5
+#define DELAY 40
+#define STEP 30
 
 void app_main() {
-    if (dac_output_enable(DAC_CHANNEL_1) != ESP_OK) ESP_LOGI("dac_output_enable ", "%s", "some error occured.");
-    gpio_set_direction_wrapper(GPIO_NUM_5, GPIO_MODE_INPUT);
-    gpio_set_level_wrapper(GPIO_NUM_5, 1);
+    dac_output_enable(DAC_CHANNEL_1);
+    gpio_set_direction(AMP_POWER_PIN, GPIO_MODE_OUTPUT);
+    gpio_set_level(AMP_POWER_PIN, 1);
 
-     while(1) {
-        int v;
-        for(v = 0; v < 255; v+= 30) {
-          if (dac_output_voltage(DAC_CHANNEL_1, v) != ESP_OK) 
-              ESP_LOGI("dac_output_voltage ", "%s", "some error occured.");
-          ets_delay_us(5000);
+    while(1) {
+        for (int i = 0; i < 250; ++i) {
+            for (int i = 0; i < 255; i+=STEP) {
+                dac_output_voltage(DAC_CHANNEL_1, i);
+                ets_delay_us(DELAY);
+            }
+            ets_delay_us(DELAY);
+            for (int i = 255; i > 0; i-=STEP) {
+                dac_output_voltage(DAC_CHANNEL_1, i);
+                ets_delay_us(DELAY);
+            }
+            ets_delay_us(10);
         }
+        vTaskDelay(100);
     }
 }
