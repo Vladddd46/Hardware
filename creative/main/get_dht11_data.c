@@ -56,7 +56,7 @@ static int preparing_for_receiving_data(int gpio) {
 
 
 
-char *get_dht11_data(int dht11_power_pin, int dht11_data_pin, int mode) {
+int get_dht11_data(int dht11_power_pin, int dht11_data_pin, int mode) {
     gpio_set_direction_wrapper(dht11_power_pin, GPIO_MODE_OUTPUT);
     gpio_set_level_wrapper(dht11_power_pin, 1);
 
@@ -65,7 +65,7 @@ char *get_dht11_data(int dht11_power_pin, int dht11_data_pin, int mode) {
     bzero(&data, sizeof(data));
 
     if (preparing_for_receiving_data(dht11_data_pin) == -1) 
-        return NULL;
+        return -1;
 
     // Getting data.
     for (int i = 1, j = 0; i < 41; i++) {
@@ -91,22 +91,22 @@ char *get_dht11_data(int dht11_power_pin, int dht11_data_pin, int mode) {
     // Checking checksum
     if (data[0] + data[1] + data[2] + data[3] != data[4]) {
         printf("%s\n", "Invalid checksum");
-        return NULL;
+        return -1;
     }
 
     // data cast.
-    char temperature[10];
-    bzero(temperature, 10);
-    char humidity[10];
-    bzero(humidity, 10);
-    itoa(data[2], temperature, 10);
-    itoa(data[0], humidity, 10);
+    // char temperature[10];
+    // bzero(temperature, 10);
+    // char humidity[10];
+    // bzero(humidity, 10);
+    // itoa(data[2], temperature, 10);
+    // itoa(data[0], humidity, 10);
         
     if (mode == 0)
-        return string_copy((char *)temperature);
+        return data[2];
     else if (mode == 1)
-        return string_copy((char *)humidity);
+        return data[0];
     else 
-        return NULL;
+        return -1;
 }
 
