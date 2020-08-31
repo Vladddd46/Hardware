@@ -94,13 +94,6 @@ int get_dht11_data(int dht11_power_pin, int dht11_data_pin, int mode) {
         return -1;
     }
 
-    // data cast.
-    // char temperature[10];
-    // bzero(temperature, 10);
-    // char humidity[10];
-    // bzero(humidity, 10);
-    // itoa(data[2], temperature, 10);
-    // itoa(data[0], humidity, 10);
         
     if (mode == 0)
         return data[2];

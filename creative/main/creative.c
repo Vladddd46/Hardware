@@ -7,7 +7,7 @@
 #include "general.h"
 #include "wrappers.h"
 #include "sh1106.h"
-// #include "font6x8.h"
+#include "peripherals.h"
 
 #define GPIO_LED1 27
 #define GPIO_LED2 26
@@ -23,8 +23,8 @@
 static xQueueHandle gpio_evt_queue = NULL;
 pthread_mutex_t mutex;
 
-static void IRAM_ATTR gpio_isr_handler(void* arg) {
-    uint32_t gpio_num = (uint32_t) arg;
+static void IRAM_ATTR gpio_isr_handler(void *arg) {
+    uint32_t gpio_num = (uint32_t)arg;
 
     xQueueSendFromISR(gpio_evt_queue, &gpio_num, NULL);
 }
@@ -32,7 +32,6 @@ static void IRAM_ATTR gpio_isr_handler(void* arg) {
 
 
 static int screen_num = 0;
-
 static void switch_handler(void* arg) {
     uint32_t io_num;
 
@@ -41,10 +40,12 @@ static void switch_handler(void* arg) {
             if (io_num == GPIO_BUTTON1) {
                 if (screen_num == 0)
                     screen_num += 1;
+                make_beep();
             }
             else if (io_num == GPIO_BUTTON2) {
                 if (screen_num == 1)
                     screen_num -= 1;
+                make_beep();
             }
         }
     }
