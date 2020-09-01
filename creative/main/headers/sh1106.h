@@ -42,5 +42,6 @@ void print_str_in_line(sh1106_t **display, char *str, int page);
 void display_print(sh1106_t **display, char *str);
 void init_display(sh1106_t *display);
 void init_i2c_driver();
+void sh1106_reverse(sh1106_t *display);
 
 #endif
