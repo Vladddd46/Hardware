@@ -34,14 +34,13 @@ void sh1106_write_page(sh1106_t *display, uint8_t page);
  */
 void sh1106_update(sh1106_t *display);
 
-// Clears display.
-void sh1106_clear(sh1106_t *display);
-
+void sh1106_clear(sh1106_t *display); // Clears display.
 void print_char(sh1106_t **display, char c, int page, int position);
 void print_str_in_line(sh1106_t **display, char *str, int page);
 void display_print(sh1106_t **display, char *str);
 void init_display(sh1106_t *display);
 void init_i2c_driver();
 void sh1106_reverse(sh1106_t *display);
+void sh1106_dereverse(sh1106_t *display);
 
 #endif

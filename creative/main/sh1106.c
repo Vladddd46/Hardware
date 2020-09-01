@@ -92,6 +92,27 @@ void sh1106_reverse(sh1106_t *display) {
 
 
 /*
+ * Reverses display in nornal position
+ */
+void sh1106_dereverse(sh1106_t *display) {
+    i2c_cmd_handle_t cmd = i2c_cmd_link_create(); // command link initialize.
+    i2c_master_start(cmd); // start bit.
+    i2c_master_write_byte(cmd, (display->addr << 1) | I2C_MASTER_WRITE, true);
+    i2c_master_write_byte(cmd, 0x00, true); // command stream
+    i2c_master_write_byte(cmd, 0xAE, true); // turn display off
+
+    i2c_master_write_byte(cmd, 0xC8, true); 
+    i2c_master_write_byte(cmd, 0xA1, true); 
+
+    i2c_master_write_byte(cmd, 0xAF, true); // on
+    i2c_master_stop(cmd); // stop bit.
+    i2c_master_cmd_begin(display->port, cmd, 10 / portTICK_PERIOD_MS);
+    i2c_cmd_link_delete(cmd);
+}
+
+
+
+/*
  * Prints character on specified page and position.
  * gage must be >= 0 && <= 7
  * position must be >= 0 && <= 126
