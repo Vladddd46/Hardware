@@ -1,2 +1,3 @@
-idf_component_register(SRCS "creative.c" "wrappers.c" "get_dht11_data.c" "general.c" "sh1106.c" "make_beep.c" "accelerometer.c"
-                    INCLUDE_DIRS "headers")
+idf_component_register(SRCS "creative.c"
+                    INCLUDE_DIRS "."
+                    REQUIRES wrappers accelerometer dht11 general sh1106 beep)

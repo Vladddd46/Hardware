@@ -7,7 +7,7 @@
 #include "general.h"
 #include "wrappers.h"
 #include "sh1106.h"
-#include "peripherals.h"
+#include "make_beep.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
