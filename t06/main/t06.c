@@ -2,6 +2,7 @@
 #include "freertos/task.h"
 #include "driver/gpio.h"
 #include "driver/dac.h"
+#include "wrappers.h"
 
 #define AMP_POWER_PIN 5
 #define DELAY 40
@@ -9,8 +10,8 @@
 
 void app_main() {
     dac_output_enable(DAC_CHANNEL_1);
-    gpio_set_direction(AMP_POWER_PIN, GPIO_MODE_OUTPUT);
-    gpio_set_level(AMP_POWER_PIN, 1);
+    gpio_set_direction_wrapper(AMP_POWER_PIN, GPIO_MODE_OUTPUT);
+    gpio_set_level_wrapper(AMP_POWER_PIN, 1);
 
     while(1) {
         for (int i = 0; i < 250; ++i) {
