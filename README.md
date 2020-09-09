@@ -1,8 +1,6 @@
-<b>Hardware</b>
-
-Learning the basics of embedded.
-
-Description:
+<h1>Hardware</h1>
+<h3>Learning the basics of embedded.</h3>
+<h4>Description:</h4>
 
 t00 - simple hello world on console.
 t01 - turn on leds.
