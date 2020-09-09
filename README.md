@@ -1,4 +1,4 @@
-<bold>Hardware</bold>
+<b>Hardware</b>
 
 Learning the basics of embedded.
 
