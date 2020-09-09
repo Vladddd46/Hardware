@@ -12,7 +12,7 @@
 <p>t08 - adxl345 accelerometer.</p>
 <p>creative  - displaying temperature and humidity on oled display. Temperature and humidity are displayed on separate screens. Screens can be switched with buttons. While button is pressed, beep sound is produced. Also when board orientation is changed by 180deg. screen is flipped.</p>
 
-All tasks are made for <a href="https://en.wikipedia.org/wiki/ESP32">esp3</a>2 on ESP-IDF framework.
+<h3>All tasks are made for <a href="https://en.wikipedia.org/wiki/ESP32">esp32</a> on ESP-IDF framework.
 For more datails:
-https://docs.espressif.com/projects/esp-idf/en/stable/index.html
+https://docs.espressif.com/projects/esp-idf/en/stable/index.html</h3>
 
